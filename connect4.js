@@ -15,16 +15,16 @@ let board = []; // array of rows, each row is array of cells  (board[y][x])
  *    board = array of rows, each row is array of cells  (board[y][x])
  */
 
-function makeBoard(col = 7, row = 6) {
+function makeBoard() {
 
   // Create Rows
-  for (let i = 0; i < row; i++) {
+  for (let i = 0; i < HEIGHT; i++) {
     board.push([]);
   }
 
   // Create Columns
   for (let row of board) {
-    for (let i = 0; i < col; i++) {
+    for (let i = 0; i < WIDTH; i++) {
       row.push(null);
     }
   }
@@ -33,24 +33,27 @@ function makeBoard(col = 7, row = 6) {
 /** makeHtmlBoard: make HTML table and row of column tops. */
 
 function makeHtmlBoard() {
-  // TODO: get "htmlBoard" variable from the item in HTML w/ID of "board"
+  const htmlBoard = document.getElementById('board');
 
-  // TODO: add comment for this code
+  // Create a tr element for the top of the board for clicking
   const top = document.createElement("tr");
   top.setAttribute("id", "column-top");
   top.addEventListener("click", handleClick);
 
-  for (var x = 0; x < WIDTH; x++) {
-    var headCell = document.createElement("td");
+  //  Add correct number of td elements and give them unique ids
+  for (let x = 0; x < WIDTH; x++) {
+    let headCell = document.createElement("td");
     headCell.setAttribute("id", x);
     top.append(headCell);
   }
   htmlBoard.append(top);
 
-  // TODO: add comment for this code
-  for (var y = 0; y < HEIGHT; y++) {
+  /**
+   Create game board.  Each td is given a unique id of its y-x coordinate.
+   */
+  for (let y = 0; y < HEIGHT; y++) {
     const row = document.createElement("tr");
-    for (var x = 0; x < WIDTH; x++) {
+    for (let x = 0; x < WIDTH; x++) {
       const cell = document.createElement("td");
       cell.setAttribute("id", `${y}-${x}`);
       row.append(cell);
@@ -63,47 +66,72 @@ function makeHtmlBoard() {
 
 function findSpotForCol(x) {
   // TODO: write the real version of this, rather than always returning 0
-  return 0;
+
+  // First check if column is full
+  if (board[0][x] !== null) { return null; }
+
+  for (let i = 0; i < HEIGHT; i++) {
+
+    // Empty Column (this will catch on last iteration of the for loop)
+    if (i === HEIGHT - 1) {
+      return HEIGHT - 1;
+
+      // Check if next row is empty, if not, we've found the correct row
+    } else {
+      //console.log(board[i + 1][x]);
+      if (board[i + 1][x] !== null) { return i; }
+    }
+  }
+  
+  //return HEIGHT - 1;
 }
 
 /** placeInTable: update DOM to place piece into HTML table of board */
-
 function placeInTable(y, x) {
-  // TODO: make a div and insert into correct table cell
+  const chip = document.createElement('div');
+  chip.classList.add('piece', `p${currPlayer}`);
+
+  const destinationCell = document.getElementById(`${y}-${x}`);
+  destinationCell.appendChild(chip);
 }
 
 /** endGame: announce game end */
 
 function endGame(msg) {
-  // TODO: pop up alert message
+  if (msg === '') {
+    window.alert('Tie game!');
+  } else {
+    window.alert(msg);
+  }
 }
 
 /** handleClick: handle click of column top to play piece */
 
 function handleClick(evt) {
   // get x from ID of clicked cell
-  var x = +evt.target.id;
+  const x = +evt.target.id;
 
   // get next spot in column (if none, ignore click)
-  var y = findSpotForCol(x);
+  const y = findSpotForCol(x);
   if (y === null) {
     return;
   }
 
   // place piece in board and add to HTML table
-  // TODO: add line to update in-memory board
   placeInTable(y, x);
+  board[y][x] = currPlayer;
 
   // check for win
   if (checkForWin()) {
     return endGame(`Player ${currPlayer} won!`);
   }
 
-  // check for tie
-  // TODO: check if all cells in board are filled; if so call, call endGame
+  // check for tie (entire board filled)
+  if (board.every(row => row.every(cell => cell !== null))) { endGame(); }
+
 
   // switch players
-  // TODO: switch currPlayer 1 <-> 2
+  (currPlayer === 1) ? currPlayer = 2 : currPlayer = 1;
 }
 
 /** checkForWin: check board cell-by-cell for "does a win start here?" */
@@ -124,8 +152,6 @@ function checkForWin() {
     );
   }
 
-  // TODO: read and understand this code. Add comments to help you.
-
   for (var y = 0; y < HEIGHT; y++) {
     for (var x = 0; x < WIDTH; x++) {
       var horiz = [[y, x], [y, x + 1], [y, x + 2], [y, x + 3]];
@@ -141,4 +167,4 @@ function checkForWin() {
 }
 
 makeBoard();
-//makeHtmlBoard();
+makeHtmlBoard();
