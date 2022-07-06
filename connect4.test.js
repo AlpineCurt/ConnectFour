@@ -20,8 +20,6 @@ describe('Game Initialization', function() {
         expect(board[0].length).toEqual(8);
     })
 
-    it('makeHtmlboard() ')
-
     afterEach(function() {
         board = [];
         WIDTH = 7;
@@ -30,3 +28,95 @@ describe('Game Initialization', function() {
         // htmlBoard1.innerHTML = '';
     })
 });
+
+describe('Win conditions', function() {
+    beforeEach(function() {
+        WIDTH = 7;
+        HEIGHT = 6;
+    })
+
+    it('horizontal win', function() {
+        board = [
+            [null, null, null, null, null, null, null],
+            [null, null, null, null, null, null, null],
+            [null, null, null, null, null, null, null],
+            [null, null, 2, null, null, null, null],
+            [null, null, 2, 1, 1, 1, 1],
+            [2, 2, 1, 2, 2, 1, 1]
+        ]
+        currPlayer = 1;
+        
+        expect(checkForWin()).toEqual(true);
+    })
+
+    it('vertical win', function () {
+        board = [
+            [null, null, null, null, null, null, null],
+            [null, null, null, null, null, null, null],
+            [2, null, null, null, null, null, null],
+            [2, null, null, null, null, null, null],
+            [2, null, null, null, null, 1, null],
+            [2, 1, null, 1, null, 1, 1]
+        ]
+        currPlayer = 2;
+
+        expect(checkForWin()).toEqual(true);
+    })
+
+    it('diagonal downward-right win', function() {
+        board = [
+            [null, null, null, null, null, null, null],
+            [null, null, null, null, null, null, null],
+            [2, null, null, null, null, null, null],
+            [1, 2, null, null, null, null, null],
+            [1, 1, 2, null, null, null, null],
+            [1, 2, 1, 2, null, null, null]
+        ]
+        currPlayer = 2;
+
+        expect(checkForWin()).toEqual(true);
+    })
+
+    it('diagonal downward-left win', function() {
+        board = [
+            [null, null, null, null, null, null, null],
+            [null, null, null, null, null, null, null],
+            [null, null, null, null, null, null, 1],
+            [null, null, null, null, null, 1, 2],
+            [null, null, null, null, 1, 2, 2],
+            [1, null, null, 1, 1, 2, 2]
+        ]
+        currPlayer = 1;
+        
+        expect(checkForWin()).toEqual(true);
+    })
+
+    it('No winner yet', function() {
+        board = [
+            [null, null, null, null, null, null, null],
+            [null, null, null, null, null, null, null],
+            [null, null, null, null, null, null, null],
+            [1, 2, 1, 2, 1, 2, 1],
+            [2, 1, 2, 1, 2, 1, 2],
+            [1, 2, 1, 2, 1, 2, 1]
+        ]
+        currPlayer = 1;
+
+        expect(checkForWin()).not.toEqual(true);
+
+    })
+
+    afterEach(function() {
+        currPlayer = 1;
+        board = [];
+    })
+})
+/*
+board = [
+    [null, null, null, null, null, null, null],
+    [null, null, null, null, null, null, null],
+    [null, null, null, null, null, null, null],
+    [null, null, null, null, null, null, null],
+    [null, null, null, null, null, null, null],
+    [null, null, null, null, null, null, null]
+]*/
