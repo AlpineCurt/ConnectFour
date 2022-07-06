@@ -14,7 +14,6 @@ let board = []; // array of rows, each row is array of cells  (board[y][x])
 /** makeBoard: create in-JS board structure:
  *    board = array of rows, each row is array of cells  (board[y][x])
  */
-
 function makeBoard() {
 
   // Create Rows
@@ -31,7 +30,6 @@ function makeBoard() {
 }
 
 /** makeHtmlBoard: make HTML table and row of column tops. */
-
 function makeHtmlBoard() {
   const htmlBoard = document.getElementById('board');
 
@@ -63,27 +61,20 @@ function makeHtmlBoard() {
 }
 
 /** findSpotForCol: given column x, return top empty y (null if filled) */
-
 function findSpotForCol(x) {
-  // TODO: write the real version of this, rather than always returning 0
-
   // First check if column is full
   if (board[0][x] !== null) { return null; }
 
   for (let i = 0; i < HEIGHT; i++) {
-
-    // Empty Column (this will catch on last iteration of the for loop)
+    // Empty Column (this will catch on last iteration of the loop)
     if (i === HEIGHT - 1) {
       return HEIGHT - 1;
 
       // Check if next row is empty, if not, we've found the correct row
     } else {
-      //console.log(board[i + 1][x]);
       if (board[i + 1][x] !== null) { return i; }
     }
   }
-  
-  //return HEIGHT - 1;
 }
 
 /** placeInTable: update DOM to place piece into HTML table of board */
@@ -96,7 +87,6 @@ function placeInTable(y, x) {
 }
 
 /** endGame: announce game end */
-
 function endGame(msg) {
   if (msg === '') {
     window.alert('Tie game!');
@@ -106,7 +96,6 @@ function endGame(msg) {
 }
 
 /** handleClick: handle click of column top to play piece */
-
 function handleClick(evt) {
   // get x from ID of clicked cell
   const x = +evt.target.id;
@@ -135,7 +124,6 @@ function handleClick(evt) {
 }
 
 /** checkForWin: check board cell-by-cell for "does a win start here?" */
-
 function checkForWin() {
   function _win(cells) {
     // Check four cells to see if they're all color of current player
@@ -151,13 +139,17 @@ function checkForWin() {
         board[y][x] === currPlayer
     );
   }
-
+  /* Iterate through every cell and from that cell create an array of coords
+      representing a line of cells extending from the cell being checked to each
+      direction:  horiz (to the right), vert (downward), diagDR (diagonally downward-right),
+      and diagDL (diagonally downward-left).
+  */
   for (var y = 0; y < HEIGHT; y++) {
     for (var x = 0; x < WIDTH; x++) {
-      var horiz = [[y, x], [y, x + 1], [y, x + 2], [y, x + 3]];
-      var vert = [[y, x], [y + 1, x], [y + 2, x], [y + 3, x]];
-      var diagDR = [[y, x], [y + 1, x + 1], [y + 2, x + 2], [y + 3, x + 3]];
-      var diagDL = [[y, x], [y + 1, x - 1], [y + 2, x - 2], [y + 3, x - 3]];
+      const horiz = [[y, x], [y, x + 1], [y, x + 2], [y, x + 3]];
+      const vert = [[y, x], [y + 1, x], [y + 2, x], [y + 3, x]];
+      const diagDR = [[y, x], [y + 1, x + 1], [y + 2, x + 2], [y + 3, x + 3]];
+      const diagDL = [[y, x], [y + 1, x - 1], [y + 2, x - 2], [y + 3, x - 3]];
 
       if (_win(horiz) || _win(vert) || _win(diagDR) || _win(diagDL)) {
         return true;
